@@ -1,9 +1,10 @@
 $(function() {
     
+    
     // hide mobile menu
     
     $(function() {
-        if (($(window).width() <= 700)) {
+        if (($(window).width() <= 800)) {
             $('.mobilemenu2').hide();
         } else {
             $('.mobilemenu2').show();
@@ -13,7 +14,7 @@ $(function() {
     // open menu when user clicks on menu (mobile only)
     
     $('.mobilemenu1').on('click',function(){
-        if (($(window).width() <= 700)){
+        if (($(window).width() <= 800)){
             $('.mobilemenu2').slideToggle();
         }
      else {
@@ -24,7 +25,7 @@ $(function() {
     // close menu when you click on item (mobile only)
     
     $('.menuitem').on('click',function(){
-        if (($(window).width() <= 700)){
+        if (($(window).width() <= 800)){
             $('.mobilemenu2').slideToggle();
         }
      else {
@@ -34,15 +35,19 @@ $(function() {
     
     // slow scroll to page sections
     
-    $('a[href^="#"]').on('click', function(event) {
-    var target = $(this.getAttribute('href'));
-    if( target.length ) {
-        event.preventDefault();
-        $('html, body').stop().animate({
-            scrollTop: target.offset().top
-        }, 600);    
-    }
-    });
+     $('a[href*="#"]:not([href="#"])').click(function() {
+            if (location.pathname.replace(/^\//,'') == this.pathname.replace(/^\//,'') && location.hostname == this.hostname) {
+              var target = $(this.hash);
+              target = target.length ? target : $('[name=' + this.hash.slice(1) +']');
+              if (target.length) {
+                $('html, body').animate({
+                  scrollTop: target.offset().top -30
+                }, 1000);
+                return false;
+              }
+            }
+          });
+    
     
     // scroll to top
     
@@ -70,6 +75,80 @@ $(function() {
     });
     
     
+    // ////////////////////////////////////////////////////// Videos and confetti
+    
+    
+   function makeRandom (v) {
+    return Math.floor(Math.random() * v)
+}
+
+var colors = ['#ff1838', '#f1ff4b', '#ffb612'];
+
+function scatterConfetti (i, el) {
+    $(el).css({
+          top: makeRandom(window.innerHeight),
+          left: makeRandom(window.innerWidth),
+          backgroundColor: colors[makeRandom(colors.length)]
+    });
+}
+
+    $('video').on('ended', function(e) {        
+        var currentIndex = $(e.target).attr('data-video-index');        
+        var newIndex = (
+            currentIndex === '5' 
+                ? 1 
+                : +currentIndex + 1
+        );
+        $('video[data-video-index="' + newIndex + '"]')[0].play();
+    });
+    
+    for (var i = 0; i < 20; i++) {
+        $('.confetti-wrapper').append($('<div />', {
+            class: 'confetti confetti-' + i % 2
+        }))
+    }
+    
+    
+    
+    $('.confetti-0').each(scatterConfetti);
+    
+    setInterval(function () {
+        $('.confetti-1').each(scatterConfetti);
+    }, 3000 + makeRandom(3000))
+    
+    setInterval(function () {
+        $('.confetti-0').each(scatterConfetti);
+    }, 4000 + makeRandom(5000));
+    
+    
+
+function scatterConfetti_small (i, el) {
+    $(el).css({
+          top: makeRandom(document.getElementByClassName('confetti-wrapper_small').innerHeight),
+          left: makeRandom(document.getElementByClassName('confetti-wrapper_small').innerWidth),
+          backgroundColor: colors[makeRandom(colors.length)]
+    });
+}
+    
+    for (var i = 0; i < 20; i++) {
+        $('confetti-wrapper_small').append($('<div />', {
+            class: 'confetti confetti-' + i % 2
+        }))
+    }
+    
+    $('.confetti-0').each(scatterConfetti);
+    
+    setInterval(function () {
+        $('.confetti-1').each(scatterConfetti);
+    }, 3000 + makeRandom(3000))
+    
+    setInterval(function () {
+        $('.confetti-0').each(scatterConfetti);
+    }, 4000 + makeRandom(5000));
+
+
+    
+
     
     // ////////////////////////////////////////////////////// Participants
     
@@ -123,10 +202,12 @@ $(function() {
     
     $('.bio').addClass('shownone');
     
-    $('.partipantname').click(function() {
-    $(this).next().toggleClass('shownone');
-    $(this).next().toggleClass('showbio');
-    });
+//    $('.partipantname').click(function() {
+//    $(this).next().toggleClass('shownone');
+//    $(this).next().toggleClass('showbio');
+//    });
 
     
 });
+    
+    
